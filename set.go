@@ -1,15 +1,8 @@
-package set
+package armory
 
 import (
 	"fmt"
-
-	"github.com/cheekybits/genny/generic"
 )
-
-//go:generate genny -in=generic_set.go -out=set.go gen "Generic=NUMBERS,string,rune"
-
-// Generic represents a generic type. It is a alias of interface{}.
-type Generic generic.Type
 
 // GenericSet implements the set data structure implemented with a map. The set
 // has an optional capacity. By default, this cap is set to zero. Setting a
