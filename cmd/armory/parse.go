@@ -13,21 +13,14 @@ import (
 	"strings"
 )
 
-var fset = token.NewFileSet()
-
-var (
-	varType     = "int"
-	varTypeName = strings.Title(varType)
-	ds          = "Set"
-)
-
-func parse() {
-	af, err := parser.ParseFile(fset, "", MustAsset("set.go"), 0)
+func parse(filename string) {
+	fset := token.NewFileSet()
+	af, err := parser.ParseFile(fset, "", MustAsset(filename), 0)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	af.Name.Name = "main"
+	af.Name.Name = pkgName
 
 	newDecls := []ast.Decl{}
 	for _, d := range af.Decls {
@@ -54,8 +47,10 @@ func parse() {
 
 	out.Write(src)
 
-	target := fmt.Sprintf("%s%s.go", strings.ToLower(varType), strings.ToLower(ds))
-	if err := ioutil.WriteFile(target, out.Bytes(), 0644); err != nil {
+	if outFile == "" {
+		outFile = fmt.Sprintf("%s_%s.go", strings.ToLower(varType), strings.ToLower(dataStructure))
+	}
+	if err := ioutil.WriteFile(outFile, out.Bytes(), 0644); err != nil {
 		log.Fatal(err)
 	}
 }
@@ -64,12 +59,17 @@ type visitFunc func(ast.Node) ast.Visitor
 
 func (f visitFunc) Visit(n ast.Node) ast.Visitor { return f(n) }
 
+var (
+	genericDSExpr   = regexp.MustCompile(`GenericSet`)
+	genericTypeExpr = regexp.MustCompile(`^Generic$`)
+)
+
 func walk(n ast.Node) ast.Visitor {
 	switch v := n.(type) {
 
 	case *ast.Ident:
-		v.Name = regexp.MustCompile(`GenericSet`).ReplaceAllString(v.Name, varTypeName+ds)
-		v.Name = regexp.MustCompile(`^Generic$`).ReplaceAllString(v.Name, varType)
+		v.Name = genericDSExpr.ReplaceAllString(v.Name, varTypeName+dataStructure)
+		v.Name = genericTypeExpr.ReplaceAllString(v.Name, varType)
 
 	}
 
