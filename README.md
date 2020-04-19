@@ -1,50 +1,51 @@
 # Armory
 
-Armory is a collection of data structures implemented for the builtin data types.
+Armory is a CLI tool that can generate typed data structures on the fly.
 
 ## Installation
 
 ```
-go get -u github.com/mattmeyers/armory
+go get -u github.com/mattmeyers/armory/cmd/armory/...
 ```
 
-## Set
+## Usage
 
-A set is a collection of unique elements. An Armory set provides the methods
+```
+armory - A CLI data structure generator
+  armory [options] <data structure>
 
-```go
-String() string
-Contains(val T) bool
-IsSubset(b *Set) bool
-IsEmpty() bool
-Len() int
-Cap() int
-SetCap(c int) *Set
-Enumerate() []T
-Add(val T) *Set
-Remove(val T) *Set
-Clear() *Set
-Equals(s2 *Set) bool
-Map(f func(T) T) *Set
-Filter(f func(T) bool) *Set
-Fold(base T, f func(T, T) T) T
-Union(s2 *Set) *Set
-Intersect(s2 *Set) *Set
-Diff(s2 *Set) *Set
-SymDiff(s2 *Set) *Set
+data structures:
+  set
+  stack
+
+options:
+  --out string, -o string   the file to write to
+  --pkg string, -p string   the file's package (default "main")
+  --type string, -t string  the data structure's type (default "int")
+  --zero string, -z string  the type's zero value, inferred by default
+  --help, -h                display this help message
 ```
 
-Set methods can be chained together for more complicated behavior.
+## License
 
-```go
-v := set.NewIntSet(1,2,3).
-  Add(4).
-  Add(5).
-  Map(func(a int) int { return 2 * a }).
-  Remove(10).
-  Filter(func(a int) bool { return a <= 6 }).
-  Remove(8).
-  Fold(0, func(a int, b int) int { return a + b })
+MIT License
 
-fmt.Println(v) // 12
-```
+Copyright (c) 2020 Matthew Meyers
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.

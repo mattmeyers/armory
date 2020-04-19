@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 	"strings"
 )
@@ -14,10 +15,45 @@ var outFile string
 var zeroVal string
 
 func init() {
-	flag.StringVar(&varType, "type", "int", "the data type for the data structure")
-	flag.StringVar(&pkgName, "pkg", "main", "the package that the file will belong to")
-	flag.StringVar(&outFile, "out", "", "the file to write to")
-	flag.StringVar(&zeroVal, "zero", "", "the type's zero value, inferred by default")
+	flag.Usage = usage
+
+	const (
+		varTypeDefault = "int"
+		varTypeUsage   = "the data type for the data structure"
+		pkgNameDefault = "main"
+		pkgNameUsage   = "the package that the file will belong to"
+		outFileDefault = ""
+		outFileUsage   = "the file to write to"
+		zeroValDefault = ""
+		zeroValueUsage = "the type's zero value, inferred by default"
+	)
+
+	flag.StringVar(&varType, "type", varTypeDefault, varTypeUsage)
+	flag.StringVar(&varType, "t", varTypeDefault, varTypeUsage)
+	flag.StringVar(&pkgName, "pkg", pkgNameDefault, pkgNameUsage)
+	flag.StringVar(&pkgName, "p", pkgNameDefault, pkgNameUsage)
+	flag.StringVar(&outFile, "out", outFileDefault, outFileUsage)
+	flag.StringVar(&outFile, "o", outFileDefault, outFileUsage)
+	flag.StringVar(&zeroVal, "zero", zeroValDefault, zeroValueUsage)
+	flag.StringVar(&zeroVal, "z", zeroValDefault, zeroValueUsage)
+}
+
+func usage() {
+	u := `  armory - A CLI data structure generator
+    armory [options] <data structure>
+
+  data structures:
+    set
+    stack
+
+  options:
+    --out string, -o string   the file to write to
+    --pkg string, -p string   the file's package (default "main")
+    --type string, -t string  the data structure's type (default "int")
+    --zero string, -z string  the type's zero value, inferred by default
+    --help, -h                display this help message
+  `
+	fmt.Fprint(flag.CommandLine.Output(), u)
 }
 
 func main() {
