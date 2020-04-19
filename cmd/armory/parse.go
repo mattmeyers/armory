@@ -15,12 +15,18 @@ import (
 
 var (
 	genericDSExpr   *regexp.Regexp
-	genericTypeExpr *regexp.Regexp = regexp.MustCompile(`^Generic$`)
+	genericTypeExpr *regexp.Regexp
+	zeroValExpr     *regexp.Regexp
 )
 
 func parse(filename string) {
 	genericDSExpr = regexp.MustCompile("Generic" + dataStructure)
 	genericTypeExpr = regexp.MustCompile(`^Generic$`)
+	zeroValExpr = regexp.MustCompile(`^Zero$`)
+
+	if zeroVal == "" {
+		zeroVal = inferZero()
+	}
 
 	fset := token.NewFileSet()
 	af, err := parser.ParseFile(fset, "", MustAsset(filename), 0)
@@ -34,6 +40,10 @@ func parse(filename string) {
 	for _, d := range af.Decls {
 		if v, ok := d.(*ast.GenDecl); ok {
 			if v.Tok == token.TYPE && v.Specs[0].(*ast.TypeSpec).Name.Name == "Generic" {
+				continue
+			}
+
+			if v.Tok == token.VAR && v.Specs[0].(*ast.ValueSpec).Names[0].Name == "Zero" {
 				continue
 			}
 		}
@@ -69,6 +79,29 @@ func parse(filename string) {
 	}
 }
 
+func inferZero() string {
+	switch varType {
+	case "int", "int8", "int16", "int32", "int64":
+		return "0"
+	case "uint", "uint8", "uint16", "uint32", "uint64":
+		return "0"
+	case "float32", "float64":
+		return "0"
+	case "byte":
+		return "0"
+	case "complex64", "complex128":
+		return "0 + 0i"
+	case "string":
+		return `""`
+	case "rune":
+		return "0"
+	case "bool":
+		return "false"
+	}
+
+	return "nil"
+}
+
 type visitFunc func(ast.Node) ast.Visitor
 
 func (f visitFunc) Visit(n ast.Node) ast.Visitor { return f(n) }
@@ -79,7 +112,7 @@ func walk(n ast.Node) ast.Visitor {
 	case *ast.Ident:
 		v.Name = genericDSExpr.ReplaceAllString(v.Name, varTypeName+dataStructure)
 		v.Name = genericTypeExpr.ReplaceAllString(v.Name, varType)
-
+		v.Name = zeroValExpr.ReplaceAllString(v.Name, zeroVal)
 	}
 
 	return visitFunc(walk)

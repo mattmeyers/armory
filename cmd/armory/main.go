@@ -11,11 +11,13 @@ var varType string
 var varTypeName string
 var pkgName string
 var outFile string
+var zeroVal string
 
 func init() {
 	flag.StringVar(&varType, "type", "int", "the data type for the data structure")
 	flag.StringVar(&pkgName, "pkg", "main", "the package that the file will belong to")
 	flag.StringVar(&outFile, "out", "", "the file to write to")
+	flag.StringVar(&zeroVal, "zero", "", "the type's zero value, inferred by default")
 }
 
 func main() {
