@@ -1,8 +1,10 @@
-package armory
+package set
 
 import (
 	"fmt"
 )
+
+type Generic interface{}
 
 // GenericSet implements the set data structure implemented with a map. The set
 // has an optional capacity. By default, this cap is set to zero. Setting a

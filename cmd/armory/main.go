@@ -30,7 +30,10 @@ func main() {
 	switch flag.Arg(0) {
 	case "set":
 		dataStructure = "Set"
-		parse("set.go")
+		parse("set/set.go")
+	case "stack":
+		dataStructure = "Stack"
+		parse("stack/stack.go")
 	default:
 		flag.Usage()
 		os.Exit(1)

@@ -13,7 +13,15 @@ import (
 	"strings"
 )
 
+var (
+	genericDSExpr   *regexp.Regexp
+	genericTypeExpr *regexp.Regexp = regexp.MustCompile(`^Generic$`)
+)
+
 func parse(filename string) {
+	genericDSExpr = regexp.MustCompile("Generic" + dataStructure)
+	genericTypeExpr = regexp.MustCompile(`^Generic$`)
+
 	fset := token.NewFileSet()
 	af, err := parser.ParseFile(fset, "", MustAsset(filename), 0)
 	if err != nil {
@@ -24,6 +32,12 @@ func parse(filename string) {
 
 	newDecls := []ast.Decl{}
 	for _, d := range af.Decls {
+		if v, ok := d.(*ast.GenDecl); ok {
+			if v.Tok == token.TYPE && v.Specs[0].(*ast.TypeSpec).Name.Name == "Generic" {
+				continue
+			}
+		}
+
 		ast.Walk(visitFunc(walk), d)
 		newDecls = append(newDecls, d)
 	}
@@ -58,11 +72,6 @@ func parse(filename string) {
 type visitFunc func(ast.Node) ast.Visitor
 
 func (f visitFunc) Visit(n ast.Node) ast.Visitor { return f(n) }
-
-var (
-	genericDSExpr   = regexp.MustCompile(`GenericSet`)
-	genericTypeExpr = regexp.MustCompile(`^Generic$`)
-)
 
 func walk(n ast.Node) ast.Visitor {
 	switch v := n.(type) {
