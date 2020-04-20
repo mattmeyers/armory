@@ -44,8 +44,8 @@ func usage() {
 
   data structures:
     set
-	stack
-	queue
+    stack
+    queue
 
   options:
     --out string, -o string   the file to write to
