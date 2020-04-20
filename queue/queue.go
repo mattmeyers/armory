@@ -47,7 +47,7 @@ func (q *GenericQueue) Push(val Generic) {
 
 func (q *GenericQueue) Pop() Generic {
 	if q.IsEmpty() {
-		return nil
+		return Zero
 	}
 
 	front := q.vals[0]
