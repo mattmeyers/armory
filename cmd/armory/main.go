@@ -39,14 +39,17 @@ func init() {
 }
 
 func usage() {
-	u := `  armory - A CLI data structure generator
-    armory [options] <data structure>
+	u := `  NAME:
+    armory - A CLI data structure generator
 
-  data structures:
+  USAGE:
+    armory [options] command
+
+  COMMANDS:
     set
     stack
 
-  options:
+  OPTIONS:
     --out string, -o string   the file to write to
     --pkg string, -p string   the file's package (default "main")
     --type string, -t string  the data structure's type (default "int")
