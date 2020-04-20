@@ -51,8 +51,7 @@ func (q *GenericQueue) Pop() Generic {
 	}
 
 	front := q.vals[0]
-	copy(q.vals, q.vals[1:])
-	q.vals = q.vals[:len(q.vals)-1]
+	q.vals = q.vals[1:]
 
 	return front
 }
