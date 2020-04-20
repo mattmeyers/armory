@@ -159,7 +159,7 @@ func TestGenericQueue_Pop(t *testing.T) {
 		{
 			name:   "Pop empty queue",
 			fields: fields{},
-			want:   nil,
+			want:   Zero,
 			after:  &GenericQueue{},
 		},
 		{
@@ -167,6 +167,12 @@ func TestGenericQueue_Pop(t *testing.T) {
 			fields: fields{vals: []Generic{1, 2, 3}},
 			want:   1,
 			after:  &GenericQueue{vals: []Generic{2, 3}},
+		},
+		{
+			name:   "Pop last value",
+			fields: fields{vals: []Generic{1}},
+			want:   1,
+			after:  &GenericQueue{vals: []Generic{}},
 		},
 	}
 	for _, tt := range tests {
