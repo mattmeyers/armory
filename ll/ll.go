@@ -7,6 +7,8 @@ import (
 
 type Generic interface{}
 
+var Zero Generic = nil
+
 type GenericLL struct {
 	head *llNode
 	tail *llNode
@@ -92,4 +94,46 @@ func (l *GenericLL) Get(index int) Generic {
 	}
 
 	return n.data
+}
+
+func (l *GenericLL) PopFront() Generic {
+	if l.len == 0 {
+		return Zero
+	}
+
+	l.len--
+	node := l.head
+
+	l.head = l.head.next
+
+	// If the head is nil, the last element was removed and the tail
+	// needs to be cleaned up
+	if l.head != nil {
+		l.head.prev = nil
+	} else {
+		l.tail = nil
+	}
+
+	return node.data
+}
+
+func (l *GenericLL) PopBack() Generic {
+	if l.len == 0 {
+		return Zero
+	}
+
+	l.len--
+	node := l.tail
+
+	l.tail = l.tail.prev
+
+	// If the tail is nil, the last element was removed and the head
+	// needs to be cleaned up
+	if l.tail != nil {
+		l.tail.next = nil
+	} else {
+		l.head = nil
+	}
+
+	return node.data
 }

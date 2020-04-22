@@ -67,3 +67,91 @@ func TestGenericLL_Get(t *testing.T) {
 		})
 	}
 }
+
+func TestGenericLL_PopFront(t *testing.T) {
+	type fields struct {
+		head *llNode
+		tail *llNode
+		len  int
+	}
+	tests := []struct {
+		name  string
+		ll    *GenericLL
+		want  Generic
+		after *GenericLL
+	}{
+		{
+			name:  "Multiple values",
+			ll:    NewGenericLL(1, 2, 3, 4),
+			want:  1,
+			after: NewGenericLL(2, 3, 4),
+		},
+		{
+			name:  "One value",
+			ll:    NewGenericLL(1),
+			want:  1,
+			after: NewGenericLL(),
+		},
+		{
+			name:  "No values",
+			ll:    NewGenericLL(),
+			want:  Zero,
+			after: NewGenericLL(),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.ll.PopFront(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GenericLL.PopFront() = %v, want %v", got, tt.want)
+			}
+
+			if !reflect.DeepEqual(tt.ll, tt.after) {
+				t.Errorf("tt.ll = %v, after = %v", tt.ll, tt.after)
+			}
+		})
+	}
+}
+
+func TestGenericLL_PopBack(t *testing.T) {
+	type fields struct {
+		head *llNode
+		tail *llNode
+		len  int
+	}
+	tests := []struct {
+		name  string
+		ll    *GenericLL
+		want  Generic
+		after *GenericLL
+	}{
+		{
+			name:  "Multiple values",
+			ll:    NewGenericLL(1, 2, 3, 4),
+			want:  4,
+			after: NewGenericLL(1, 2, 3),
+		},
+		{
+			name:  "One value",
+			ll:    NewGenericLL(1),
+			want:  1,
+			after: NewGenericLL(),
+		},
+		{
+			name:  "No values",
+			ll:    NewGenericLL(),
+			want:  Zero,
+			after: NewGenericLL(),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := tt.ll.PopBack(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GenericLL.PopBack() = %v, want %v", got, tt.want)
+			}
+
+			if !reflect.DeepEqual(tt.ll, tt.after) {
+				t.Errorf("tt.ll = %v, after = %v", tt.ll, tt.after)
+			}
+		})
+	}
+}
