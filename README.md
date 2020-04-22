@@ -11,19 +11,23 @@ go get -u github.com/mattmeyers/armory/cmd/armory/...
 ## Usage
 
 ```
-armory - A CLI data structure generator
-  armory [options] <data structure>
+NAME:
+  armory - A CLI data structure generator
 
-data structures:
+USAGE:
+  armory [options] command
+
+COMMANDS:
+  dll
   set
   stack
 
-options:
-  --out string, -o string   the file to write to
-  --pkg string, -p string   the file's package (default "main")
-  --type string, -t string  the data structure's type (default "int")
-  --zero string, -z string  the type's zero value, inferred by default
-  --help, -h                display this help message
+OPTIONS:
+  --out string, -o string     the file to write to
+  --pkg string, -p string     the file's package (default "main")
+  --type string, -t string    the data structure's type (default "int")
+  --zero string, -z string    the type's zero value, inferred by default
+  --help, -h                  display this help message
 ```
 
 ## License
