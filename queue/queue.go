@@ -62,3 +62,13 @@ func (q *GenericQueue) Pop() Generic {
 
 	return front
 }
+
+// Peek returns the value in the front of the queue without removing the
+// element.
+func (q *GenericQueue) Peek() Generic {
+	if q.IsEmpty() {
+		return Zero
+	}
+
+	return q.vals[0]
+}

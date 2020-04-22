@@ -193,3 +193,49 @@ func TestGenericQueue_Pop(t *testing.T) {
 		})
 	}
 }
+
+func TestGenericQueue_Peek(t *testing.T) {
+	type fields struct {
+		vals []Generic
+	}
+	tests := []struct {
+		name   string
+		fields fields
+		want   Generic
+		after  *GenericQueue
+	}{
+		{
+			name:   "Multiple values",
+			fields: fields{vals: []Generic{1, 2, 3, 4}},
+			want:   1,
+			after:  NewGenericQueue(1, 2, 3, 4),
+		},
+		{
+			name:   "One Value",
+			fields: fields{vals: []Generic{1}},
+			want:   1,
+			after:  NewGenericQueue(1),
+		},
+		{
+			name:   "No values",
+			fields: fields{vals: []Generic{}},
+			want:   Zero,
+			after:  NewGenericQueue(),
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			q := &GenericQueue{
+				vals: tt.fields.vals,
+			}
+
+			if got := q.Peek(); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("GenericQueue.Peek() = %v, want %v", got, tt.want)
+			}
+
+			if !reflect.DeepEqual(q, tt.after) {
+				t.Errorf("GenericQueue.vals = %v, after = %v", q, tt.after)
+			}
+		})
+	}
+}
