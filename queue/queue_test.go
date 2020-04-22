@@ -17,12 +17,12 @@ func TestNewGenericQueue(t *testing.T) {
 		{
 			name: "New empty queue",
 			args: args{[]Generic{}},
-			want: &GenericQueue{vals: []Generic{}},
+			want: NewGenericQueue(),
 		},
 		{
 			name: "New queue with values",
 			args: args{[]Generic{1, 2, 3}},
-			want: &GenericQueue{vals: []Generic{1, 2, 3}},
+			want: NewGenericQueue(1, 2, 3),
 		},
 	}
 	for _, tt := range tests {
@@ -56,9 +56,7 @@ func TestGenericQueue_IsEmpty(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			q := &GenericQueue{
-				vals: tt.fields.vals,
-			}
+			q := NewGenericQueue(tt.fields.vals...)
 			if got := q.IsEmpty(); got != tt.want {
 				t.Errorf("GenericQueue.IsEmpty() = %v, want %v", got, tt.want)
 			}
@@ -88,9 +86,7 @@ func TestGenericQueue_String(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			q := &GenericQueue{
-				vals: tt.fields.vals,
-			}
+			q := NewGenericQueue(tt.fields.vals...)
 			if got := q.String(); got != tt.want {
 				t.Errorf("GenericQueue.String() = %v, want %v", got, tt.want)
 			}
@@ -117,7 +113,7 @@ func TestGenericQueue_Push(t *testing.T) {
 			args: []args{
 				{val: 1},
 			},
-			want: &GenericQueue{vals: []Generic{1}},
+			want: NewGenericQueue(1),
 		},
 		{
 			name:   "Push multiple value",
@@ -126,14 +122,12 @@ func TestGenericQueue_Push(t *testing.T) {
 				{val: 1},
 				{val: 2},
 			},
-			want: &GenericQueue{vals: []Generic{1, 2}},
+			want: NewGenericQueue(1, 2),
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			q := &GenericQueue{
-				vals: tt.fields.vals,
-			}
+			q := NewGenericQueue(tt.fields.vals...)
 
 			for _, a := range tt.args {
 				q.Push(a.val)
@@ -151,39 +145,46 @@ func TestGenericQueue_Pop(t *testing.T) {
 		vals []Generic
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   Generic
-		after  *GenericQueue
+		name      string
+		fields    fields
+		want      Generic
+		after     *GenericQueue
+		wantPanic bool
 	}{
 		{
-			name:   "Pop empty queue",
-			fields: fields{},
-			want:   Zero,
-			after:  &GenericQueue{},
+			name:      "Pop empty queue",
+			fields:    fields{},
+			want:      Zero,
+			after:     NewGenericQueue(),
+			wantPanic: true,
 		},
 		{
-			name:   "Pop single value",
-			fields: fields{vals: []Generic{1, 2, 3}},
-			want:   1,
-			after:  &GenericQueue{vals: []Generic{2, 3}},
+			name:      "Pop single value",
+			fields:    fields{vals: []Generic{1, 2, 3}},
+			want:      1,
+			after:     NewGenericQueue(2, 3),
+			wantPanic: false,
 		},
 		{
-			name:   "Pop last value",
-			fields: fields{vals: []Generic{1}},
-			want:   1,
-			after:  &GenericQueue{vals: []Generic{}},
+			name:      "Pop last value",
+			fields:    fields{vals: []Generic{1}},
+			want:      1,
+			after:     NewGenericQueue(),
+			wantPanic: false,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			q := &GenericQueue{
-				vals: tt.fields.vals,
-			}
+			defer func() {
+				r := recover()
+				if (r != nil) != tt.wantPanic {
+					t.Errorf("GenericQueue.Pop() recover = %v, wantPanic = %v", r, tt.wantPanic)
+				}
+			}()
 
-			got := q.Pop()
+			q := NewGenericQueue(tt.fields.vals...)
 
-			if got != tt.want {
+			if got := q.Pop(); got != tt.want {
 				t.Errorf("GenericQueue.Pop() = %v, want %v", got, tt.want)
 			}
 
@@ -199,35 +200,44 @@ func TestGenericQueue_Peek(t *testing.T) {
 		vals []Generic
 	}
 	tests := []struct {
-		name   string
-		fields fields
-		want   Generic
-		after  *GenericQueue
+		name      string
+		fields    fields
+		want      Generic
+		after     *GenericQueue
+		wantPanic bool
 	}{
 		{
-			name:   "Multiple values",
-			fields: fields{vals: []Generic{1, 2, 3, 4}},
-			want:   1,
-			after:  NewGenericQueue(1, 2, 3, 4),
+			name:      "Multiple values",
+			fields:    fields{vals: []Generic{1, 2, 3, 4}},
+			want:      1,
+			after:     NewGenericQueue(1, 2, 3, 4),
+			wantPanic: false,
 		},
 		{
-			name:   "One Value",
-			fields: fields{vals: []Generic{1}},
-			want:   1,
-			after:  NewGenericQueue(1),
+			name:      "One Value",
+			fields:    fields{vals: []Generic{1}},
+			want:      1,
+			after:     NewGenericQueue(1),
+			wantPanic: false,
 		},
 		{
-			name:   "No values",
-			fields: fields{vals: []Generic{}},
-			want:   Zero,
-			after:  NewGenericQueue(),
+			name:      "No values",
+			fields:    fields{vals: []Generic{}},
+			want:      Zero,
+			after:     NewGenericQueue(),
+			wantPanic: true,
 		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			q := &GenericQueue{
-				vals: tt.fields.vals,
-			}
+			defer func() {
+				r := recover()
+				if (r != nil) != tt.wantPanic {
+					t.Errorf("GenericQueue.Pop() recover = %v, wantPanic = %v", r, tt.wantPanic)
+				}
+			}()
+
+			q := NewGenericQueue(tt.fields.vals...)
 
 			if got := q.Peek(); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GenericQueue.Peek() = %v, want %v", got, tt.want)
