@@ -30,9 +30,10 @@ func (s *GenericStack) String() string {
 	}
 
 	sb := strings.Builder{}
-	sb.WriteString("[ ")
-	for i := s.top; i >= 0; i-- {
-		sb.WriteString(fmt.Sprintf("%v ", s.vals[i]))
+	sb.WriteString("[")
+	sb.WriteString(fmt.Sprintf("%v", s.vals[s.top]))
+	for i := s.top - 1; i >= 0; i-- {
+		sb.WriteString(fmt.Sprintf(" %v", s.vals[i]))
 	}
 	sb.WriteString("]")
 	return sb.String()

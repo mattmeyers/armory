@@ -39,20 +39,25 @@ func init() {
 }
 
 func usage() {
-	u := `  armory - A CLI data structure generator
-    armory [options] <data structure>
+	u := `  NAME:
+    armory - A CLI data structure generator
 
-  data structures:
+  USAGE:
+    armory [options] command
+
+  COMMANDS:
+    dll
     set
+    sll
     stack
     queue
 
-  options:
-    --out string, -o string   the file to write to
-    --pkg string, -p string   the file's package (default "main")
-    --type string, -t string  the data structure's type (default "int")
-    --zero string, -z string  the type's zero value, inferred by default
-    --help, -h                display this help message
+  OPTIONS:
+    --out string, -o string     the file to write to
+    --pkg string, -p string     the file's package (default "main")
+    --type string, -t string    the data structure's type (default "int")
+    --zero string, -z string    the type's zero value, inferred by default
+    --help, -h                  display this help message
   `
 	fmt.Fprint(flag.CommandLine.Output(), u)
 }
@@ -67,9 +72,15 @@ func main() {
 	}
 
 	switch flag.Arg(0) {
+	case "dll":
+		dataStructure = "DLL"
+		parse("ll/dll.go")
 	case "set":
 		dataStructure = "Set"
 		parse("set/set.go")
+	case "sll":
+		dataStructure = "SLL"
+		parse("ll/sll.go")
 	case "stack":
 		dataStructure = "Stack"
 		parse("stack/stack.go")
