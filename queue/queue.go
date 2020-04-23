@@ -91,22 +91,11 @@ func (q *GenericQueue) Pop() Generic {
 	n := q.head
 	q.len--
 
-	if n.prev == nil {
-		q.head = n.next
-		if q.head != nil {
-			q.head.prev = nil
-		}
+	q.head = n.next
+	if q.head != nil {
+		q.head.prev = nil
 	} else {
-		n.prev.next = n.next
-	}
-
-	if n.next == nil {
-		q.tail = n.prev
-		if q.tail != nil {
-			q.tail.next = nil
-		}
-	} else {
-		n.next.prev = n.prev
+		q.tail = nil
 	}
 
 	return n.data
