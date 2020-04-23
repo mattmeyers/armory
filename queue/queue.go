@@ -8,9 +8,6 @@ import (
 // Generic represents a generic value.
 type Generic interface{}
 
-// Zero is the default zero value for a queue.
-var Zero Generic = nil
-
 // GenericQueue is a generic queue that is implemented as a linked list.
 type GenericQueue struct {
 	head *dNode
@@ -41,15 +38,16 @@ func newDNode(data Generic) *dNode {
 }
 
 func (q *GenericQueue) String() string {
-	if q.IsEmpty() {
+	if q.len == 0 {
 		return "[]"
 	}
 
 	sb := strings.Builder{}
-	sb.WriteString("[ ")
-	n := q.head
+	sb.WriteString("[")
+	sb.WriteString(fmt.Sprintf("%v", q.head.data))
+	n := q.head.next
 	for n != nil {
-		sb.WriteString(fmt.Sprintf("%v ", n.data))
+		sb.WriteString(fmt.Sprintf(" %v", n.data))
 		n = n.next
 	}
 	sb.WriteString("]")

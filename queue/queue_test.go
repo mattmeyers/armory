@@ -81,7 +81,7 @@ func TestGenericQueue_String(t *testing.T) {
 		{
 			name:   "Queue is not empty",
 			fields: fields{vals: []Generic{1, 2, 3}},
-			want:   "[ 1 2 3 ]",
+			want:   "[1 2 3]",
 		},
 	}
 	for _, tt := range tests {
@@ -154,7 +154,7 @@ func TestGenericQueue_Pop(t *testing.T) {
 		{
 			name:      "Pop empty queue",
 			fields:    fields{},
-			want:      Zero,
+			want:      0,
 			after:     NewGenericQueue(),
 			wantPanic: true,
 		},
@@ -223,7 +223,7 @@ func TestGenericQueue_Peek(t *testing.T) {
 		{
 			name:      "No values",
 			fields:    fields{vals: []Generic{}},
-			want:      Zero,
+			want:      0,
 			after:     NewGenericQueue(),
 			wantPanic: true,
 		},
