@@ -20,7 +20,9 @@ USAGE:
 COMMANDS:
   dll
   set
+  sll
   stack
+  queue
 
 OPTIONS:
   --out string, -o string     the file to write to
