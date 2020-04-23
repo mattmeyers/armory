@@ -50,6 +50,7 @@ func usage() {
     set
     sll
     stack
+    queue
 
   OPTIONS:
     --out string, -o string     the file to write to
@@ -83,6 +84,9 @@ func main() {
 	case "stack":
 		dataStructure = "Stack"
 		parse("stack/stack.go")
+	case "queue":
+		dataStructure = "Queue"
+		parse("queue/queue.go")
 	default:
 		flag.Usage()
 		os.Exit(1)
