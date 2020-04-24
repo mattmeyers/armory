@@ -14,28 +14,36 @@ var pkgName string
 var outFile string
 var zeroVal string
 
+type ds struct {
+	name string
+	file string
+}
+
+var commands = map[string]ds{
+	"dll":   {name: "DLL", file: "ll/dll.go"},
+	"queue": {name: "Queue", file: "queue/queue.go"},
+	"set":   {name: "Set", file: "set/set.go"},
+	"stack": {name: "Stack", file: "stack/stack.go"},
+}
+
 func init() {
 	flag.Usage = usage
 
 	const (
 		varTypeDefault = "int"
-		varTypeUsage   = "the data type for the data structure"
 		pkgNameDefault = "main"
-		pkgNameUsage   = "the package that the file will belong to"
 		outFileDefault = ""
-		outFileUsage   = "the file to write to"
 		zeroValDefault = ""
-		zeroValueUsage = "the type's zero value, inferred by default"
 	)
 
-	flag.StringVar(&varType, "type", varTypeDefault, varTypeUsage)
-	flag.StringVar(&varType, "t", varTypeDefault, varTypeUsage)
-	flag.StringVar(&pkgName, "pkg", pkgNameDefault, pkgNameUsage)
-	flag.StringVar(&pkgName, "p", pkgNameDefault, pkgNameUsage)
-	flag.StringVar(&outFile, "out", outFileDefault, outFileUsage)
-	flag.StringVar(&outFile, "o", outFileDefault, outFileUsage)
-	flag.StringVar(&zeroVal, "zero", zeroValDefault, zeroValueUsage)
-	flag.StringVar(&zeroVal, "z", zeroValDefault, zeroValueUsage)
+	flag.StringVar(&varType, "type", varTypeDefault, "")
+	flag.StringVar(&varType, "t", varTypeDefault, "")
+	flag.StringVar(&pkgName, "pkg", pkgNameDefault, "")
+	flag.StringVar(&pkgName, "p", pkgNameDefault, "")
+	flag.StringVar(&outFile, "out", outFileDefault, "")
+	flag.StringVar(&outFile, "o", outFileDefault, "")
+	flag.StringVar(&zeroVal, "zero", zeroValDefault, "")
+	flag.StringVar(&zeroVal, "z", zeroValDefault, "")
 }
 
 func usage() {
@@ -71,25 +79,13 @@ func main() {
 		os.Exit(1)
 	}
 
-	switch flag.Arg(0) {
-	case "dll":
-		dataStructure = "DLL"
-		parse("ll/dll.go")
-	case "set":
-		dataStructure = "Set"
-		parse("set/set.go")
-	case "sll":
-		dataStructure = "SLL"
-		parse("ll/sll.go")
-	case "stack":
-		dataStructure = "Stack"
-		parse("stack/stack.go")
-	case "queue":
-		dataStructure = "Queue"
-		parse("queue/queue.go")
-	default:
+	c, ok := commands[flag.Arg(0)]
+	if !ok {
+		fmt.Printf("invalid command: %s\n", flag.Arg(0))
 		flag.Usage()
 		os.Exit(1)
 	}
 
+	dataStructure = c.name
+	parse(c.file)
 }
